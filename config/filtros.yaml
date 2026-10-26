@@ -1,0 +1,36 @@
+# Criterios del job-scout. Editá libremente; el agente los lee en cada corrida.
+
+roles_objetivo:
+  - Data Scientist
+  - AI Engineer / Generative AI Engineer / LLM Engineer
+  - Machine Learning Engineer
+  - Data Analyst
+  - Data Engineer
+
+seniority_aceptado: [Trainee, Junior, Jr, Semi Senior, SSr, Mid, sin especificar]
+seniority_descartar: [Senior, Sr, Staff, Principal, Lead, Manager, Director, Head]
+
+ubicacion:
+  # Válido: trabajo en Argentina, o del exterior que contrate desde Argentina/LATAM.
+  remoto_aceptado: [Argentina, LATAM, Latin America, Anywhere, Worldwide, Global, Remote (sin restricción de país)]
+  presencial_o_hibrido_solo_en: [CABA, Ciudad Autónoma de Buenos Aires, Buenos Aires (Capital)]
+  descartar_si_menciona:
+    - "US only / Remote USA / must reside in the US"
+    - "US citizenship / security clearance / green card"
+    - "work authorization in the US required"
+    - presencial u híbrido fuera de CABA
+
+descartar_otros:
+  - más de 4 años de experiencia excluyente
+  - salario explícito menor a USD 2000/mes (o equivalente)
+
+fuentes_gmail:
+  - jobalerts-noreply@linkedin.com
+  - jobs-noreply@linkedin.com
+  - no-reply@getonbrd.com
+  - "@greenhouse-jobs.com"
+  - "@teamtailor-mail.com"
+  - "@lensa.com"
+  - "@jobs2web.com"
+
+umbral_match_sugerido: 60   # debajo de esto la oferta queda Pendiente pero marcada como baja

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="LechuJob">
+  <!-- pala -->
+  <g transform="rotate(14 100 70)">
+    <rect x="97" y="18" width="6" height="70" rx="3" fill="#8a6a4a"/>
+    <rect x="92" y="14" width="16" height="6" rx="3" fill="#8a6a4a"/>
+    <path d="M88 86 h24 v14 a12 12 0 0 1 -24 0z" fill="#b8c0c8" stroke="#6b7580" stroke-width="2"/>
+  </g>
+  <!-- cuerpo -->
+  <ellipse cx="56" cy="78" rx="34" ry="38" fill="#8f979f"/>
+  <ellipse cx="56" cy="86" rx="22" ry="26" fill="#c9cfd5"/>
+  <!-- orejas -->
+  <path d="M28 46 L24 24 L42 38 Z" fill="#8f979f"/>
+  <path d="M84 46 L88 24 L70 38 Z" fill="#8f979f"/>
+  <!-- ojos -->
+  <circle cx="43" cy="56" r="13" fill="#fff"/>
+  <circle cx="69" cy="56" r="13" fill="#fff"/>
+  <circle cx="45" cy="57" r="6" fill="#2b2f33"/>
+  <circle cx="67" cy="57" r="6" fill="#2b2f33"/>
+  <!-- pico -->
+  <path d="M52 66 L60 66 L56 75 Z" fill="#e0a43a"/>
+  <!-- ala sosteniendo la pala -->
+  <path d="M82 70 q14 6 14 20 q-10 2 -18 -6z" fill="#7a828a"/>
+  <!-- patas -->
+  <path d="M46 114 v6 M42 120 h8 M66 114 v6 M62 120 h8" stroke="#e0a43a" stroke-width="3" stroke-linecap="round"/>
+</svg>

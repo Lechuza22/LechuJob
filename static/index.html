@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LechuJob</title>
+<link rel="icon" href="/logo.svg">
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #ffffff; --ink: #1f2328; --muted: #6b7580; --line: #e1e4e8;
+    --owl: #8f979f; --accent: #d4932a; --accent-ink: #ffffff;
+    --good: #2f8f5b; --mid: #b7791f; --low: #a0a7ae; --bad: #c0392b;
+    --chip: #eef0f2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16191d; --card: #1f2329; --ink: #e8eaed; --muted: #9aa3ac; --line: #2e343b;
+      --owl: #9aa3ac; --accent: #e0a43a; --accent-ink: #1a1a1a;
+      --good: #4cc38a; --mid: #e0a43a; --low: #6b7580; --bad: #ef6b5b; --chip: #2a3037;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 20px 16px 60px; }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+  header img { width: 56px; height: 56px; }
+  header h1 { margin: 0; font-size: 26px; letter-spacing: -.3px; }
+  header p { margin: 0; color: var(--muted); font-size: 13px; }
+  .actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  button { font: inherit; border: 1px solid var(--line); background: var(--card); color: var(--ink);
+           padding: 9px 14px; border-radius: 10px; cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+  .card h2 { margin: 0 0 4px; font-size: 17px; }
+  .sub { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+  #run { display: none; }
+  #run.show { display: block; }
+  #runlog { background: var(--bg); border-radius: 10px; padding: 10px 12px; max-height: 260px; overflow: auto;
+            font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; }
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--line);
+             border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; vertical-align: -1px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .err { color: var(--bad); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .tile { background: var(--bg); border-radius: 10px; padding: 10px 12px; }
+  .tile b { display: block; font-size: 22px; }
+  .tile span { color: var(--muted); font-size: 12.5px; }
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; color: var(--muted); font-weight: 500; font-size: 12.5px; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td.why { color: var(--muted); font-size: 13px; max-width: 360px; }
+  a { color: var(--accent); }
+  .score { display: inline-block; min-width: 38px; text-align: center; padding: 2px 6px; border-radius: 8px;
+           font-weight: 700; color: #fff; }
+  .chip { display: inline-block; background: var(--chip); border-radius: 6px; padding: 1px 7px; font-size: 12px; margin-right: 4px; }
+  details summary { cursor: pointer; color: var(--muted); margin-top: 12px; }
+  .row-actions { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+  .note { color: var(--muted); font-size: 13px; }
+  .empty { color: var(--muted); padding: 10px 0; }
+  tr.offer { cursor: pointer; }
+  tr.offer:hover td { background: var(--bg); }
+  tr.offer .caret { color: var(--muted); font-size: 12px; margin-left: 4px; }
+  tr.detail td { background: var(--bg); padding: 14px 16px; }
+  .ficha { display: grid; grid-template-columns: 1fr 1.6fr; gap: 18px; }
+  @media (max-width: 720px) { .ficha { grid-template-columns: 1fr; } }
+  .ficha h4 { margin: 0 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); }
+  .ficha p { margin: 0 0 8px; }
+  .ficha ul { margin: 4px 0 10px; padding-left: 18px; }
+  .ficha li { margin-bottom: 2px; }
+  .ficha .lbl { font-weight: 600; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="/logo.svg" alt="">
+    <div>
+      <h1>LechuJob</h1>
+      <p>Jr Data Scientist · AI Engineer · Data Analyst · ML/Data Engineer</p>
+    </div>
+    <div class="actions">
+      <button class="primary" data-run="buscar">🔎 Buscar ofertas</button>
+      <button data-run="seguimiento">🔄 Seguimiento</button>
+      <button id="btn-sheet">📊 Abrir Sheet</button>
+    </div>
+  </header>
+
+  <section class="card" id="run">
+    <h2 id="run-title"></h2>
+    <p class="sub" id="run-sub"></p>
+    <div id="runlog"></div>
+  </section>
+
+  <section class="card">
+    <h2>Reporte de ofertas</h2>
+    <p class="sub" id="rep-sub">Todavía no hay reporte. Apretá “Buscar ofertas”.</p>
+    <div class="tablewrap"><table id="rep-table" hidden>
+      <thead><tr><th></th><th>Match</th><th>Empresa · Puesto</th><th>Dónde</th><th>Por qué</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <div class="row-actions" id="rep-actions" hidden>
+      <button id="btn-save">Guardar selección</button>
+      <button id="btn-postular" disabled title="Próxima fase: CV a medida + postulación con Chrome">📤 Postular (próximamente)</button>
+      <span class="note" id="sel-note"></span>
+    </div>
+    <details id="desc" hidden><summary></summary>
+      <div class="tablewrap"><table><thead><tr><th>Empresa · Puesto</th><th>Motivo</th></tr></thead><tbody></tbody></table></div>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>Tracker</h2>
+    <p class="sub" id="est-sub">Sin datos todavía. Se actualiza con cada corrida.</p>
+    <div class="tiles" id="tiles"></div>
+    <div id="novedades"></div>
+    <h3 style="font-size:15px;margin:18px 0 6px">Postulaciones</h3>
+    <div class="tablewrap"><table id="post-table">
+      <thead><tr><th>Empresa</th><th>Puesto</th><th>Fecha</th><th>Canal</th><th>Estado</th><th>Última novedad</th><th>Follow-up</th></tr></thead>
+      <tbody></tbody></table></div>
+    <h3 style="font-size:15px;margin:18px 0 6px">Contactos</h3>
+    <div class="tablewrap"><table id="cont-table">
+      <thead><tr><th>Nombre</th><th>Rol</th><th>Empresa</th><th>Canal</th><th>Acción</th><th>Estado</th></tr></thead>
+      <tbody></tbody></table></div>
+  </section>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = iso => iso ? new Date(iso).toLocaleString("es-AR", {dateStyle: "medium", timeStyle: "short"}) : "";
+let state = null, selected = new Set(), selectionLoaded = false, polling = null, lastRunning = false;
+
+function scoreColor(m) {
+  const css = getComputedStyle(document.documentElement);
+  return css.getPropertyValue(m >= 75 ? "--good" : m >= 60 ? "--mid" : "--low");
+}
+
+function renderRun(r) {
+  const box = $("#run");
+  if (!r.inicio) { box.classList.remove("show"); return; }
+  box.classList.add("show");
+  const nombre = r.tipo === "buscar" ? "Buscando ofertas" : "Seguimiento";
+  $("#run-title").innerHTML = r.running ? `<span class="spinner"></span> ${nombre}…` : (r.error ? `⚠️ ${nombre}: error` : `✅ ${nombre}: listo`);
+  $("#run-sub").innerHTML = r.error ? `<span class="err">${esc(r.error)}</span>` : `Inicio ${fmt(r.inicio)}${r.fin ? " · fin " + fmt(r.fin) : ""}`;
+  const log = $("#runlog");
+  const atBottom = log.scrollTop + log.clientHeight >= log.scrollHeight - 20;
+  log.textContent = r.lineas.join("\n") + (r.resultado && !r.running ? "\n\n" + r.resultado : "");
+  if (atBottom) log.scrollTop = log.scrollHeight;
+  document.querySelectorAll("[data-run]").forEach(b => b.disabled = r.running);
+}
+
+function ficha(o) {
+  const d = o.descripcion || {};
+  const list = (title, items) => items && items.length
+    ? `<div class="lbl">${title}</div><ul>${items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "";
+  const web = o.empresa_web ? `<p><a href="${esc(o.empresa_web)}" target="_blank" rel="noopener">${esc(o.empresa_web.replace(/^https?:\/\//, ""))}</a></p>` : "";
+  return `<div class="ficha">
+    <div><h4>La empresa</h4>${web}<p>${esc(o.empresa_resumen || "Sin información.")}</p></div>
+    <div><h4>El puesto</h4><p>${esc(d.resumen || "Sin descripción.")}</p>
+      ${list("Tareas", d.tareas)}${list("Requisitos", d.requisitos)}${list("Deseables", d.deseables)}
+      <p><span class="lbl">Salario:</span> ${esc(d.salario || "No informado")}</p></div>
+  </div>`;
+}
+
+function renderReporte(rep) {
+  if (!rep) return;
+  const pend = rep.ofertas.filter(o => o.decision === "Pendiente").sort((a, b) => b.match - a.match);
+  const desc = rep.ofertas.filter(o => o.decision === "Descartar");
+  $("#rep-sub").textContent = `${fmt(rep.generado)} · ${rep.alertas_leidas} alertas nuevas → ${pend.length} aptas, ${desc.length} descartadas`;
+  const tb = $("#rep-table tbody");
+  tb.innerHTML = pend.map(o => `
+    <tr class="offer" data-row="${esc(o.id)}">
+      <td><input type="checkbox" data-id="${esc(o.id)}" ${selected.has(o.id) ? "checked" : ""}></td>
+      <td><span class="score" style="background:${scoreColor(o.match)}">${esc(o.match)}</span></td>
+      <td><b>${esc(o.empresa)}</b><span class="caret">▸ ver ficha</span><br><a href="${esc(o.link)}" target="_blank" rel="noopener">${esc(o.puesto)}</a><br>
+          <span class="chip">${esc(o.rol)}</span><span class="chip">${esc(o.idioma)}</span></td>
+      <td>${esc(o.ubicacion)}<br><span class="note">${esc(o.modalidad)}</span></td>
+      <td class="why">${esc(o.motivo)}</td>
+    </tr>
+    <tr class="detail" data-detail="${esc(o.id)}" hidden><td colspan="5">${ficha(o)}</td></tr>`).join("")
+    || `<tr><td colspan="5" class="empty">No hubo ofertas aptas en esta corrida.</td></tr>`;
+  tb.querySelectorAll("tr.offer").forEach(tr => tr.onclick = ev => {
+    if (ev.target.closest("input, a")) return;
+    const det = tb.querySelector(`tr[data-detail="${CSS.escape(tr.dataset.row)}"]`);
+    det.hidden = !det.hidden;
+    tr.querySelector(".caret").textContent = det.hidden ? "▸ ver ficha" : "▾ ocultar";
+  });
+  $("#rep-table").hidden = false;
+  $("#rep-actions").hidden = pend.length === 0;
+  const d = $("#desc");
+  d.hidden = desc.length === 0;
+  d.querySelector("summary").textContent = `Ver ${desc.length} descartadas y por qué`;
+  d.querySelector("tbody").innerHTML = desc.map(o => `
+    <tr><td><b>${esc(o.empresa)}</b> · <a href="${esc(o.link)}" target="_blank" rel="noopener">${esc(o.puesto)}</a></td>
+        <td class="why">${esc(o.motivo)}</td></tr>`).join("");
+  tb.querySelectorAll("input[type=checkbox]").forEach(cb => cb.onchange = () => {
+    cb.checked ? selected.add(cb.dataset.id) : selected.delete(cb.dataset.id);
+    $("#sel-note").textContent = `${selected.size} seleccionadas (sin guardar)`;
+  });
+}
+
+function renderEstado(est) {
+  if (!est) return;
+  $("#est-sub").textContent = `Actualizado ${fmt(est.actualizado)}`;
+  const rows = (est.resumen || []).filter(r => r[0] && r[0] !== "Métrica");
+  $("#tiles").innerHTML = rows.map(r => `<div class="tile"><b>${esc(r[1])}</b><span>${esc(r[0])}</span></div>`).join("");
+  const nov = est.novedades || [];
+  $("#novedades").innerHTML = nov.length ? `<p class="sub" style="margin-top:12px">Novedades: ${nov.map(esc).join(" · ")}</p>` : "";
+  const p = est.postulaciones || [];
+  $("#post-table tbody").innerHTML = p.map(r => `<tr><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td>
+      <td><span class="chip">${esc(r[6])}</span></td><td>${esc(r[7])}</td><td>${esc(r[8])}</td></tr>`).join("")
+    || `<tr><td colspan="7" class="empty">Todavía no hay postulaciones.</td></tr>`;
+  const c = est.contactos || [];
+  $("#cont-table tbody").innerHTML = c.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[4])}</td>
+      <td>${esc(r[6])}</td><td><span class="chip">${esc(r[8])}</span></td></tr>`).join("")
+    || `<tr><td colspan="6" class="empty">Todavía no hay contactos.</td></tr>`;
+}
+
+async function refresh() {
+  try {
+    state = await (await fetch("/api/state")).json();
+  } catch { return; }
+  if (!selectionLoaded) { selected = new Set(state.seleccion.ids || []); selectionLoaded = true; }
+  renderRun(state.run);
+  // Re-render de datos solo al terminar una corrida o en la primera carga, para no pisar checkboxes.
+  if (!state.run.running && (lastRunning || !$("#rep-table").dataset.loaded)) {
+    renderReporte(state.reporte); renderEstado(state.estado);
+    $("#rep-table").dataset.loaded = "1";
+  }
+  lastRunning = state.run.running;
+  clearTimeout(polling);
+  polling = setTimeout(refresh, state.run.running ? 1500 : 10000);
+}
+
+document.querySelectorAll("[data-run]").forEach(b => b.onclick = async () => {
+  const res = await fetch("/api/run", {method: "POST", headers: {"Content-Type": "application/json"},
+                                       body: JSON.stringify({tipo: b.dataset.run})});
+  if (!res.ok) { const j = await res.json(); $("#run-sub").textContent = j.error; }
+  refresh();
+});
+$("#btn-sheet").onclick = () => window.open(state?.sheet_url, "_blank", "noopener");
+$("#btn-save").onclick = async () => {
+  const res = await (await fetch("/api/seleccion", {method: "POST", headers: {"Content-Type": "application/json"},
+                                                     body: JSON.stringify({ids: [...selected]})})).json();
+  $("#sel-note").textContent = `✔ ${res.ids.length} guardadas para postular`;
+};
+refresh();
+</script>
+</body>
+</html>

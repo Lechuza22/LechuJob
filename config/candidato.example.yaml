@@ -1,0 +1,19 @@
+# Copiá este archivo como config/candidato.yaml y completalo con tus datos.
+# config/candidato.yaml está en .gitignore: nunca se sube al repo.
+nombre: Tu Nombre
+email: tu.email@example.com
+linkedin: https://www.linkedin.com/in/tu-usuario
+github: https://github.com/tu-usuario
+ubicacion: Buenos Aires, Argentina
+pretension_salarial:
+  moneda: USD
+  minimo_mensual: 2000
+idiomas:
+  espanol: Nativo
+  ingles: Profesional (B2+)
+cv_base:          # rutas relativas a esta carpeta del proyecto
+  es: "../cvs/CV_ES.md"
+  en: "../cvs/CV_EN.md"
+
+# ID del Google Sheet tracker (lo que va entre /d/ y /edit en la URL).
+google_sheet_id: PEGAR_ACA_EL_ID
